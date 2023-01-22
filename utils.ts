@@ -29,13 +29,12 @@ export const addIconsToDOM = (
 		data.forEach((path) => {
 			registeredFilePaths[path] = true;
 		});
-		console.log('registeredFilePaths', registeredFilePaths);
 
 		data.forEach((embedPath, dataPath, ) => {
-			console.log('searching', dataPath, 'in', fileExplorer.view.fileItems);
+			//console.log('searching', dataPath, 'in', fileExplorer.view.fileItems);
 			const fileItem = fileExplorer.view.fileItems[dataPath];
 			if (fileItem) {
-				console.log('found', fileItem);
+				//console.log('found', fileItem);
 				const titleEl = fileItem.titleEl;
 				const titleInnerEl = fileItem.titleInnerEl;
 

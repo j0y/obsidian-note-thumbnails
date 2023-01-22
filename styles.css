@@ -2,7 +2,7 @@
 	margin: 0 4px 0 0;
 	display: inline-block;
 	align-self: center;
-	background-size: contain;
+	background-size: cover;
 	background-position: center center;
 }
 
