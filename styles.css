@@ -1,8 +1,12 @@
-/*
+.obsidian-icon-folder-icon {
+	margin: 0 4px 0 0;
+	display: inline-block;
+	align-self: center;
+	background-size: contain;
+	background-position: center center;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
+.nav-folder-title,
+.nav-file-title {
+	align-items: center;
+}
