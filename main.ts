@@ -59,7 +59,7 @@ export default class MyPlugin extends Plugin {
 
 	onMount(): void {
 		console.log('mounting thumbnails');
-		const thumbnailDir = this.settings.thumbnailsPath;
+		const thumbnailDir = `${this.app.vault.configDir}/${this.settings.thumbnailsPath}`;
 		getFilesInDirectory(this, thumbnailDir).then((files) => {
 			this.notesWithThumbnail = [];
 			files.forEach((f) => {
