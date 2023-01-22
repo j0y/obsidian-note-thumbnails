@@ -15,8 +15,8 @@ export class ThumbnailWidget extends WidgetType {
 		const div = document.createElement("span");
 
 		div.classList.add('obsidian-icon-folder-icon');
-		const iconName = this.plugin.settings.thumbnailsPath + '/' + this.content + '.md.webp';
-		insertIconToNode(this.plugin, iconName, div);
+		console.log('editro embeddd', this.content);
+		insertIconToNode(this.plugin, this.content, div);
 
 		return div;
 	}

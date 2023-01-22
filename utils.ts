@@ -14,7 +14,7 @@ import {FileSystemAdapter} from "obsidian";
  */
 export const addIconsToDOM = (
 	plugin: MyPlugin,
-	data: Set<string>,
+	data: Map<string, string>,
 	registeredFileExplorers: WeakSet<ExplorerView>,
 	callback?: () => void,
 ): void => {
@@ -31,7 +31,7 @@ export const addIconsToDOM = (
 		});
 		console.log('registeredFilePaths', registeredFilePaths);
 
-		data.forEach((dataPath) => {
+		data.forEach((embedPath, dataPath, ) => {
 			console.log('searching', dataPath, 'in', fileExplorer.view.fileItems);
 			const fileItem = fileExplorer.view.fileItems[dataPath];
 			if (fileItem) {
@@ -41,20 +41,17 @@ export const addIconsToDOM = (
 
 				// needs to check because of the refreshing the plugin will duplicate all the icons
 				if (titleEl.children.length === 2 || titleEl.children.length === 1) {
-					const iconName = plugin.settings.thumbnailsPath + '/' + dataPath + '.webp';
-					if (iconName) {
-						const existingIcon = titleEl.querySelector('.obsidian-icon-folder-icon');
-						if (existingIcon) {
-							existingIcon.remove();
-						}
-
-						const iconNode = titleEl.createDiv();
-						iconNode.classList.add('obsidian-icon-folder-icon');
-
-						insertIconToNode(plugin, iconName, iconNode);
-
-						titleEl.insertBefore(iconNode, titleInnerEl);
+					const existingIcon = titleEl.querySelector('.obsidian-icon-folder-icon');
+					if (existingIcon) {
+						existingIcon.remove();
 					}
+
+					const iconNode = titleEl.createDiv();
+					iconNode.classList.add('obsidian-icon-folder-icon');
+
+					insertIconToNode(plugin, embedPath, iconNode);
+
+					titleEl.insertBefore(iconNode, titleInnerEl);
 				}
 			}
 		});
@@ -77,7 +74,7 @@ export const insertIconToNode = (plugin: MyPlugin, icon: string, node: HTMLEleme
 	let url = '';
 	const adapter = plugin.app.vault.adapter;
 	if (adapter instanceof FileSystemAdapter) {
-		url = adapter.getResourcePath(plugin.app.vault.configDir + '/' + icon);
+		url = adapter.getResourcePath(icon);
 	}
 	node.style.backgroundImage = `url('${url}')`;
 	node.style.borderRadius = `${plugin.settings.borderRadius}%`;

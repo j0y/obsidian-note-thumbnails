@@ -46,12 +46,25 @@ function buildViewPlugin(plugin: MyPlugin) {
 								const listCharFrom = node.from - 2;
 								const nodeContent = view.state.doc.sliceString(node.from, node.to)
 								console.log('internal link ',  nodeContent);
+								const activeNote = plugin.app.workspace.activeEditor?.file;
+								if (!activeNote) {
+									return;
+								}
+
+								const linkedNote = plugin.app.metadataCache.getFirstLinkpathDest(nodeContent, activeNote.path);
+								if (!linkedNote) {
+									return;
+								}
+								const embedImage = plugin.notesWithEmbed.get(linkedNote.path)
+								if (!embedImage) {
+									return;
+								}
 
 								builder.add(
 									listCharFrom,
 									listCharFrom,
 									Decoration.widget({
-										widget: new ThumbnailWidget(plugin, nodeContent),
+										widget: new ThumbnailWidget(plugin, embedImage),
 									})
 								);
 							}
