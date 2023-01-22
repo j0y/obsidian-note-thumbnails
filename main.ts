@@ -44,6 +44,7 @@ export default class MyPlugin extends Plugin {
 
 		await createDefaultDirectory(this);
 
+		this.app.workspace.onLayoutReady(() => this.generateThumbnails());
 		this.app.workspace.onLayoutReady(() => this.handleChangeLayout());
 		this.registerEvent(this.app.workspace.on('layout-change', () => this.handleChangeLayout()));
 
@@ -57,18 +58,18 @@ export default class MyPlugin extends Plugin {
 		this.onMount();
 	}
 
-	onMount(): void {
+	async onMount() {
 		console.log('mounting thumbnails');
+		this.notesWithThumbnail = [];
+
 		const thumbnailDir = `${this.app.vault.configDir}/${this.settings.thumbnailsPath}`;
-		getFilesInDirectory(this, thumbnailDir).then((files) => {
-			this.notesWithThumbnail = [];
-			files.forEach((f) => {
-				const thumbnailName = f.slice(thumbnailDir.length + 1); //remove .obsidian/plugins/obsidian-icon-folder/icons + /
-				const noteName = thumbnailName.slice(0, -5); //remove .webp
-				this.notesWithThumbnail.push(noteName);
-			});
-			addIconsToDOM(this, this.notesWithThumbnail, this.registeredFileExplorers);
-		});
+		const allNotes = this.app.vault.getMarkdownFiles();
+		for (const note of allNotes) {
+			if (await this.app.vault.adapter.exists(`${thumbnailDir}/${note.path}.webp`)) {
+				this.notesWithThumbnail.push(note.path);
+			}
+		}
+		addIconsToDOM(this, this.notesWithThumbnail, this.registeredFileExplorers);
 	}
 
 
@@ -78,6 +79,11 @@ export default class MyPlugin extends Plugin {
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	generateThumbnails() {
+		console.log('markdown files', app.vault.getMarkdownFiles());
+		console.log('all files', app.vault.getFiles());
 	}
 }
 const getFilesInDirectory = async (plugin: Plugin, dir: string): Promise<string[]> => {
@@ -94,4 +100,8 @@ const createDirectory = async (plugin: MyPlugin, dir: string): Promise<boolean> 
 	}
 
 	return doesDirExist;
+};
+
+const doesFileExists = (plugin: MyPlugin, path: string): Promise<boolean> => {
+	return plugin.app.vault.adapter.exists(path);
 };
