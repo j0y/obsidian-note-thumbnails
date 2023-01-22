@@ -79,7 +79,7 @@ export const insertIconToNode = (plugin: MyPlugin, icon: string, node: HTMLEleme
 	let url = '';
 	const adapter = plugin.app.vault.adapter;
 	if (adapter instanceof FileSystemAdapter) {
-		url = adapter.getResourcePath(plugin.app.vault.configDir + '/' + icon);
+		url = adapter.getResourcePath(icon);
 	}
 	node.style.backgroundImage = `url('${url}')`;
 	node.style.borderRadius = `${plugin.settings.borderRadius}%`;

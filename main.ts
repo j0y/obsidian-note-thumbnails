@@ -21,7 +21,7 @@ interface MyPluginSettings {
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-	thumbnailsPath: 'plugins/obsidian-icon-folder/icons',
+	thumbnailsPath: '.obsidian/plugins/obsidian-icon-folder/icons',
 	size: 32,
 	borderRadius: 10,
 	extraMargin: {
@@ -88,9 +88,9 @@ const createDefaultDirectory = async (plugin: MyPlugin): Promise<void> => {
 };
 
 const createDirectory = async (plugin: MyPlugin, dir: string): Promise<boolean> => {
-	const doesDirExist = await plugin.app.vault.adapter.exists(`${plugin.app.vault.configDir}/${plugin.settings.thumbnailsPath}/${dir}`);
+	const doesDirExist = await plugin.app.vault.adapter.exists(`${plugin.settings.thumbnailsPath}/${dir}`);
 	if (!doesDirExist) {
-		await plugin.app.vault.adapter.mkdir(`${plugin.app.vault.configDir}/${plugin.settings.thumbnailsPath}/${dir}`);
+		await plugin.app.vault.adapter.mkdir(`${plugin.settings.thumbnailsPath}/${dir}`);
 	}
 
 	return doesDirExist;
