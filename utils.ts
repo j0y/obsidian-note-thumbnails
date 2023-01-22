@@ -76,12 +76,12 @@ export const addIconsToDOM = (
  * @param color
  */
 export const insertIconToNode = (plugin: MyPlugin, icon: string, node: HTMLElement, color?: string): void => {
-	let basePath = '';
+	let url = '';
 	const adapter = plugin.app.vault.adapter;
 	if (adapter instanceof FileSystemAdapter) {
-		basePath = adapter.getBasePath();
+		url = adapter.getResourcePath(plugin.app.vault.configDir + '/' + icon);
 	}
-	node.style.backgroundImage = `url('app://local${basePath}/${icon}')`;
+	node.style.backgroundImage = `url('${url}')`;
 	node.style.borderRadius = `${plugin.settings.borderRadius}%`;
 
 	// Change margin of icon
