@@ -49,7 +49,7 @@ function buildViewPlugin(plugin: MyPlugin) {
 
 								builder.add(
 									listCharFrom,
-									listCharFrom + 1,
+									listCharFrom,
 									Decoration.widget({
 										widget: new ThumbnailWidget(plugin, nodeContent),
 									})
