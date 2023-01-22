@@ -12,6 +12,7 @@ import {
 } from "@codemirror/view";
 import {ThumbnailWidget} from "./widget";
 import MyPlugin from "./main";
+import {MarkdownView, TFile} from "obsidian";
 
 function buildViewPlugin(plugin: MyPlugin) {
 	return ViewPlugin.fromClass(
@@ -46,27 +47,30 @@ function buildViewPlugin(plugin: MyPlugin) {
 								const listCharFrom = node.from - 2;
 								const nodeContent = view.state.doc.sliceString(node.from, node.to)
 								console.log('internal link ',  nodeContent);
-								const activeNote = plugin.app.workspace.activeEditor?.file;
-								if (!activeNote) {
-									return;
-								}
+								const leafs = plugin.app.workspace.getLeavesOfType('markdown');
+								console.log('leafs', leafs);
+								for (const leaf of leafs) {
+									if (leaf.view instanceof MarkdownView && leaf.view.file) {
+										const file: TFile = leaf.view.file;
+										const linkedNote = plugin.app.metadataCache.getFirstLinkpathDest(nodeContent, file.path);
+										if (!linkedNote) {
+											return;
+										}
+										const embedImage = plugin.notesWithEmbed.get(linkedNote.path)
+										if (!embedImage) {
+											return;
+										}
 
-								const linkedNote = plugin.app.metadataCache.getFirstLinkpathDest(nodeContent, activeNote.path);
-								if (!linkedNote) {
-									return;
+										builder.add(
+											listCharFrom,
+											listCharFrom,
+											Decoration.widget({
+												widget: new ThumbnailWidget(plugin, embedImage),
+											})
+										);
+										break;
+									}
 								}
-								const embedImage = plugin.notesWithEmbed.get(linkedNote.path)
-								if (!embedImage) {
-									return;
-								}
-
-								builder.add(
-									listCharFrom,
-									listCharFrom,
-									Decoration.widget({
-										widget: new ThumbnailWidget(plugin, embedImage),
-									})
-								);
 							}
 						},
 					});
