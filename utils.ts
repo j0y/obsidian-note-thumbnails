@@ -14,17 +14,15 @@ import {FileSystemAdapter} from "obsidian";
  */
 export const addIconsToDOM = (
 	plugin: MyPlugin,
-	data: string[],
+	data: Set<string>,
 	registeredFileExplorers: WeakSet<ExplorerView>,
 	callback?: () => void,
 ): void => {
 	const fileExplorers = plugin.app.workspace.getLeavesOfType('file-explorer');
 	fileExplorers.forEach((fileExplorer) => {
-		if (registeredFileExplorers.has(fileExplorer.view)) {
-			return;
+		if (!registeredFileExplorers.has(fileExplorer.view)) {
+			registeredFileExplorers.add(fileExplorer.view);
 		}
-
-		registeredFileExplorers.add(fileExplorer.view);
 
 		// create a map with registered file paths to have constant look up time
 		const registeredFilePaths: Record<string, boolean> = {};

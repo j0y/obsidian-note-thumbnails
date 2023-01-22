@@ -1,7 +1,7 @@
-import { App, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import {App, LinkCache, MarkdownView, Modal, Plugin, PluginSettingTab, Setting, TFile} from 'obsidian';
 import {BuilderExt} from "./plugin";
-import {addIconsToDOM} from "./utils";
-import {ExplorerView} from "./@types/obsidian";
+import {addIconsToDOM, insertIconToNode} from "./utils";
+import {ExplorerView, FileItem} from "./@types/obsidian";
 import {Prec} from "@codemirror/state";
 
 // Remember to rename these classes and interfaces!
@@ -21,7 +21,7 @@ interface MyPluginSettings {
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-	thumbnailsPath: 'plugins/obsidian-icon-folder/icons',
+	thumbnailsPath: 'plugins/obsidian-icon-folder/icons',// todo: use this.manifest.id
 	size: 32,
 	borderRadius: 10,
 	extraMargin: {
@@ -34,7 +34,8 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 
 export default class MyPlugin extends Plugin {
 	settings: MyPluginSettings;
-	private notesWithThumbnail: string[];
+	private notesWithThumbnail = new Set<string>;
+	private notesWithoutThumbnail = new Set<string>;
 	private registeredFileExplorers = new Set<ExplorerView>();
 
 	async onload() {
@@ -44,9 +45,8 @@ export default class MyPlugin extends Plugin {
 
 		await createDefaultDirectory(this);
 
-		this.app.workspace.onLayoutReady(() => this.generateThumbnails());
-		this.app.workspace.onLayoutReady(() => this.handleChangeLayout());
-		this.registerEvent(this.app.workspace.on('layout-change', () => this.handleChangeLayout()));
+		this.app.workspace.onLayoutReady(() => this.checkNotesAndMount());
+		this.registerEvent(this.app.workspace.on('layout-change', () => this.onMount()));
 
 		console.log('regirstering');
 		//this.registerExtensions([emojiListField], 'markdown');
@@ -54,21 +54,22 @@ export default class MyPlugin extends Plugin {
 		//this.registerEditorExtension(Prec.lowest(asyncDecoBuilderExt(this)));
 	}
 
-	private handleChangeLayout(): void {
-		this.onMount();
-	}
-
-	async onMount() {
-		console.log('mounting thumbnails');
-		this.notesWithThumbnail = [];
-
+	async checkNotesAndMount() {
+		console.log('checkNotesAndMounttttt');
 		const thumbnailDir = `${this.app.vault.configDir}/${this.settings.thumbnailsPath}`;
 		const allNotes = this.app.vault.getMarkdownFiles();
 		for (const note of allNotes) {
 			if (await this.app.vault.adapter.exists(`${thumbnailDir}/${note.path}.webp`)) {
-				this.notesWithThumbnail.push(note.path);
+				this.notesWithThumbnail.add(note.path);
+			} else {
+				this.notesWithoutThumbnail.add(note.path);
 			}
 		}
+		this.generateThumbnails();
+		await this.onMount();
+	}
+
+	async onMount() {
 		addIconsToDOM(this, this.notesWithThumbnail, this.registeredFileExplorers);
 	}
 
@@ -82,8 +83,21 @@ export default class MyPlugin extends Plugin {
 	}
 
 	generateThumbnails() {
-		console.log('markdown files', app.vault.getMarkdownFiles());
-		console.log('all files', app.vault.getFiles());
+		console.log('generateThumbnailsvvvvsss');
+		this.notesWithoutThumbnail.forEach(async note => {
+			const metadata = this.app.metadataCache.getCache(note)
+			console.log('metadata', metadata);
+			if (metadata && metadata.embeds && metadata.embeds.length > 0) {
+				//get embeds[0] and find that file and resize and save as thumbnail
+				const embedFile = this.app.metadataCache.getFirstLinkpathDest(metadata.embeds[0].link, note);
+				if (!embedFile) {
+					return;
+				}
+				console.log('embedFile', embedFile);
+				const image = await this.app.vault.adapter.readBinary(embedFile.path)
+				console.log('image', image);
+			}
+		})
 	}
 }
 const getFilesInDirectory = async (plugin: Plugin, dir: string): Promise<string[]> => {
