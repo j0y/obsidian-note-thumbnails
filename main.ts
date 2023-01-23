@@ -51,17 +51,23 @@ export default class MyPlugin extends Plugin {
 
 	async checkNotesAndMount() {
 		console.log('checkNotesAndMounttttt');
+		const pictureExtensions = ["jpg", "jpeg", "png", "webp", "bmp", "svg", "gif", "ico"];
 		const allNotes = this.app.vault.getMarkdownFiles();
 		for (const note of allNotes) {
 			const metadata = this.app.metadataCache.getFileCache(note)
 			//console.log('metadata', metadata);
 			if (metadata && metadata.embeds && metadata.embeds.length > 0) {
-				const embedFile = this.app.metadataCache.getFirstLinkpathDest(metadata.embeds[0].link, note.parent.path);
-				if (!embedFile) {
-					return;
+				for (const embed of metadata.embeds) {
+					const embedFile = this.app.metadataCache.getFirstLinkpathDest(embed.link, note.parent.path);
+					if (!embedFile) {
+						continue;
+					}
+					//console.log('embedFile', embedFile);
+					if (pictureExtensions.includes(embedFile.extension)) {
+						this.notesWithEmbed.set(note.path, embedFile.path);
+						break;
+					}
 				}
-				//console.log('embedFile', embedFile);
-				this.notesWithEmbed.set(note.path, embedFile.path);
 			}
 		}
 		console.log('this.notesWithEmbed', this.notesWithEmbed);
