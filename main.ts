@@ -36,21 +36,17 @@ export default class MyPlugin extends Plugin {
 	private registeredFileExplorers = new Set<ExplorerView>();
 
 	async onload() {
-		console.log(`loading ${this.manifest.id}`);
-
 		await this.loadSettings();
 
 		this.app.workspace.onLayoutReady(() => this.checkNotesAndMount());
 		this.registerEvent(this.app.workspace.on('layout-change', () => this.onMount()));
 
-		console.log('regirstering');
 		//this.registerExtensions([emojiListField], 'markdown');
 		this.registerEditorExtension([Prec.lowest(BuilderExt(this))])//emojiListPlugin
 		//this.registerEditorExtension(Prec.lowest(asyncDecoBuilderExt(this)));
 	}
 
 	async checkNotesAndMount() {
-		console.log('checkNotesAndMounttttt');
 		const pictureExtensions = ["jpg", "jpeg", "png", "webp", "bmp", "svg", "gif", "ico"];
 		const allNotes = this.app.vault.getMarkdownFiles();
 		for (const note of allNotes) {
@@ -70,7 +66,7 @@ export default class MyPlugin extends Plugin {
 				}
 			}
 		}
-		console.log('this.notesWithEmbed', this.notesWithEmbed);
+		//console.log('this.notesWithEmbed', this.notesWithEmbed);
 		await this.onMount();
 	}
 

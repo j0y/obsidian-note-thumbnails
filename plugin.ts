@@ -23,7 +23,6 @@ function buildViewPlugin(plugin: MyPlugin) {
 			constructor(view: EditorView) {
 				this.decorations = this.buildDecorations(view);
 				this.plugin = plugin;
-				console.log('construcot');
 			}
 
 			update(update: ViewUpdate) {
@@ -46,9 +45,9 @@ function buildViewPlugin(plugin: MyPlugin) {
 								// Position of the '-' or the '*'.
 								const listCharFrom = node.from - 2;
 								const nodeContent = view.state.doc.sliceString(node.from, node.to)
-								console.log('internal link ',  nodeContent);
+								//console.log('internal link ',  nodeContent);
 								const leafs = plugin.app.workspace.getLeavesOfType('markdown');
-								console.log('leafs', leafs);
+								//console.log('leafs', leafs);
 								for (const leaf of leafs) {
 									if (leaf.view instanceof MarkdownView && leaf.view.file) {
 										const file: TFile = leaf.view.file;
