@@ -11,7 +11,8 @@ import {
 	EditorView,
 	WidgetType,
 } from "@codemirror/view";
-import { EmojiWidget } from "./widget";
+import { ThumbnailWidget } from "./widget";
+import MyPlugin from "./main";
 
 export const emojiListField = StateField.define<DecorationSet>({
 	create(state): DecorationSet {
@@ -20,7 +21,7 @@ export const emojiListField = StateField.define<DecorationSet>({
 	update(oldState: DecorationSet, transaction: Transaction): DecorationSet {
 		const builder = new RangeSetBuilder<Decoration>();
 
-		syntaxTree(transaction.state).iterate({
+		/*syntaxTree(transaction.state).iterate({
 			enter(node) {
 				if (node.type.name === "hmd-internal-link") {
 					// Position of the '-' or the '*'.
@@ -30,12 +31,12 @@ export const emojiListField = StateField.define<DecorationSet>({
 						listCharFrom,
 						listCharFrom + 1,
 						Decoration.widget({
-							widget: new EmojiWidget(),
+							widget: new ThumbnailWidget(),
 						})
 					);
 				}
 			},
-		});
+		});*/
 
 		return builder.finish();
 	},

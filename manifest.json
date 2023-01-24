@@ -4,8 +4,7 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "This plugin adds thumbnails beside notes using first image embed.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"author": "j0y",
+	"authorUrl": "https://github.com/j0y/",
 	"isDesktopOnly": false
 }
