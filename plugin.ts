@@ -41,7 +41,7 @@ function buildViewPlugin(plugin: MyPlugin) {
 						from,
 						to,
 						enter(node) {
-							if (node.type.name === "hmd-internal-link") {
+							if (node.type.name.startsWith("hmd-internal-link")) {
 								// Position of the '-' or the '*'.
 								const listCharFrom = node.from - 2;
 								const nodeContent = view.state.doc.sliceString(node.from, node.to)
