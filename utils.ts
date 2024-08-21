@@ -35,8 +35,8 @@ export const addIconsToDOM = (
 			const fileItem = fileExplorer.view.fileItems[dataPath];
 			if (fileItem) {
 				//console.log('found', fileItem);
-				const titleEl = fileItem.titleEl;
-				const titleInnerEl = fileItem.titleInnerEl;
+				const titleEl = fileItem.selfEl;
+				const titleInnerEl = fileItem.innerEl;
 
 				// needs to check because of the refreshing the plugin will duplicate all the icons
 				if (titleEl.children.length === 2 || titleEl.children.length === 1) {
