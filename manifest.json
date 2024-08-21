@@ -1,8 +1,8 @@
 {
 	"id": "obsidian-note-thumbnails",
 	"name": "Note Thumbnails",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
+	"version": "1.0.1",
+	"minAppVersion": "1.6.7",
 	"description": "This plugin adds thumbnails beside notes using first image embed.",
 	"author": "j0y",
 	"authorUrl": "https://github.com/j0y/",
